@@ -1,13 +1,17 @@
-from bs4 import BeautifulSoup
-from bs4 import SoupStrainer
-import requests
-import urllib.request
-import os
 import pandas as pd
 import re
 import datetime
-from selenium import webdriver
 import time
+
+import requests
+import urllib.request
+from bs4 import BeautifulSoup
+from bs4 import SoupStrainer
+
+from selenium import webdriver
+from selenium.webdriver.support.wait import WebDriverWait
+from selenium.webdriver.support import expected_conditions as EC
+from selenium.webdriver.common.by import By
 
 
 class Scrapper:
@@ -60,4 +64,38 @@ class Scrapper:
         for pubDate in soupPubDate:
             publish_date_list.append(str(pubDate.text)[:10])
 
-        print(publish_date_list)
+        return song_name_list, artist_name_list, publish_date_list
+
+    def songWeeklyAllTimeView(self):
+
+        driver_path = "C:\Program Files (x86)\chromedriver.exe"
+        browser = webdriver.Chrome(executable_path=driver_path)
+        browser.get(self.currentURL)
+
+        weekly_view_list = []
+        all_time_view_list = []
+
+        last_height = browser.execute_script("return document.body.scrollHeight")
+
+        while True:
+            browser.execute_script("window.scrollTo(0, document.body.scrollHeight);")
+            time.sleep(1)
+            new_height = browser.execute_script("return document.body.scrollHeight")
+            if new_height == last_height:
+                break
+            last_height = new_height
+
+        weeklyPlaysPath = "//span[@class='sc-visuallyhidden']"
+
+        weeklyAllTime = browser.find_elements_by_xpath(weeklyPlaysPath)[0:100]
+
+        i = 0
+        for element in weeklyAllTime:
+            if i == 0:
+                weekly_view_list.append(int(element.text))
+                i += 1
+            else:
+                all_time_view_list.append(int(element.text))
+                i -= 1
+
+        return weekly_view_list, all_time_view_list
