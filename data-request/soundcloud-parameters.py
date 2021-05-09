@@ -29,6 +29,7 @@ def url_splitter(url):
 content = urllib.request.urlopen(urllink).read()
 h2Tags = SoupStrainer("article")
 soup = BeautifulSoup(content, "html.parser", parse_only=h2Tags).select("h2 > a")
+
 song_url_list = []
 song_name_list = []
 artist_url_list = []
