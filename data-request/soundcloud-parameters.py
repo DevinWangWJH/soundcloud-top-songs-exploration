@@ -23,7 +23,6 @@ browser.get(urllink)
 # )
 
 last_height = browser.execute_script("return document.body.scrollHeight")
-print(last_height)
 
 while True:
     browser.execute_script("window.scrollTo(0, document.body.scrollHeight);")
@@ -33,13 +32,13 @@ while True:
         break
     last_height = new_height
 
-# sourceData = browser.page_source
-data = browser.find_elements_by_class_name("sc-visuallyhidden")[1:100]
+weeklyPlaysPath = "//span[@class='sc-visuallyhidden']"
+
+data = browser.find_elements_by_xpath(weeklyPlaysPath)[0:100]
 
 for element in data:
     print(element.text)
 
-browser.quit()
 
 genres = [
     "alternativerock",
